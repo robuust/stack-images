@@ -16,7 +16,7 @@ write_package_list() {
     docker run --rm "$image_tag" dpkg-query --show --showformat='${Package}\n' >> "$output_file"
 }
 
-RUN_IMAGE_TAG="heroku/heroku:${STACK_VERSION}"
+RUN_IMAGE_TAG="robuust/heroku:${STACK_VERSION}"
 RUN_DOCKERFILE_DIR="heroku-${STACK_VERSION}"
 [[ -d "${RUN_DOCKERFILE_DIR}" ]] || abort "fatal: directory ${RUN_DOCKERFILE_DIR} not found"
 display "Building ${RUN_DOCKERFILE_DIR} / ${RUN_IMAGE_TAG} Heroku runtime image"
@@ -35,15 +35,15 @@ write_package_list "$BUILD_IMAGE_TAG" "$BUILD_DOCKERFILE_DIR"
 # write_package_list is not needed for *cnb* variants, as they don't install
 # any additional packages over their non-*cnb* counterparts.
 
-CNB_RUN_IMAGE_TAG="${RUN_IMAGE_TAG}-cnb"
-CNB_RUN_DOCKERFILE_DIR="${RUN_DOCKERFILE_DIR}-cnb"
-display "Building ${CNB_RUN_DOCKERFILE_DIR} / ${CNB_RUN_IMAGE_TAG} CNB runtime image"
-docker buildx build --platform=linux/arm64,linux/amd64 --tag "$CNB_RUN_IMAGE_TAG" --push "$CNB_RUN_DOCKERFILE_DIR" | indent
+# CNB_RUN_IMAGE_TAG="${RUN_IMAGE_TAG}-cnb"
+# CNB_RUN_DOCKERFILE_DIR="${RUN_DOCKERFILE_DIR}-cnb"
+# display "Building ${CNB_RUN_DOCKERFILE_DIR} / ${CNB_RUN_IMAGE_TAG} CNB runtime image"
+# docker buildx build --platform=linux/arm64,linux/amd64 --tag "$CNB_RUN_IMAGE_TAG" --push "$CNB_RUN_DOCKERFILE_DIR" | indent
 
-CNB_BUILD_IMAGE_TAG="${RUN_IMAGE_TAG}-cnb-build"
-CNB_BUILD_DOCKERFILE_DIR="${RUN_DOCKERFILE_DIR}-cnb-build"
-display "Building ${CNB_BUILD_DOCKERFILE_DIR} / ${CNB_BUILD_IMAGE_TAG} CNB build-time image"
-docker buildx build --platform=linux/arm64,linux/amd64 --tag "$CNB_BUILD_IMAGE_TAG" --push "$CNB_BUILD_DOCKERFILE_DIR" | indent
+# CNB_BUILD_IMAGE_TAG="${RUN_IMAGE_TAG}-cnb-build"
+# CNB_BUILD_DOCKERFILE_DIR="${RUN_DOCKERFILE_DIR}-cnb-build"
+# display "Building ${CNB_BUILD_DOCKERFILE_DIR} / ${CNB_BUILD_IMAGE_TAG} CNB build-time image"
+# docker buildx build --platform=linux/arm64,linux/amd64 --tag "$CNB_BUILD_IMAGE_TAG" --push "$CNB_BUILD_DOCKERFILE_DIR" | indent
 
 display "Size breakdown..."
 docker images --format "table {{.Repository}}:{{.Tag}}\t{{.Size}}" \
