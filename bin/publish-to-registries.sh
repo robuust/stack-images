@@ -3,9 +3,18 @@
 set -euo pipefail
 set -x
 
-# Disable tracing temporarily to prevent logging registry tokens.
-(set +x; echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin)
-(set +x; curl -f -X POST "$ID_SERVICE_TOKEN_ENDPOINT" -d "{\"username\":\"$ID_SERVICE_USERNAME\",\"password\":\"$ID_SERVICE_PASSWORD\"}" -s --retry 3 | jq -r ".raw_id_token" | docker login "$INTERNAL_REGISTRY_HOST" -u "$INTERNAL_REGISTRY_USERNAME" --password-stdin)
+(
+  # Disable tracing (until the end of this subshell) to prevent logging registry tokens.
+  set +x
+
+  echo "Logging into Docker Hub..."
+  echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+
+  echo "Logging into internal container registry..."
+  curl -sSf --retry 3 -X POST "$ID_SERVICE_TOKEN_ENDPOINT" -d "{\"username\":\"${ID_SERVICE_USERNAME}\",\"password\":\"${ID_SERVICE_PASSWORD}\"}" \
+    | jq -er ".raw_id_token" \
+    | docker login "$INTERNAL_REGISTRY_HOST" -u "$INTERNAL_REGISTRY_USERNAME" --password-stdin
+)
 
 bin/build.sh "${STACK_VERSION}"
 
@@ -15,8 +24,11 @@ push_group() {
     for variant in "" "-build" "-cnb" "-cnb-build"; do
       source="${publicTag}${variant}"
       target="${targetTagBase}${variant}${targetTagSuffix}"
-      docker tag "${source}" "${target}"
-      docker push "${target}"
+      chmod +r $HOME/.docker/config.json
+      docker container run --rm --net host \
+        -v regctl-conf:/home/appuser/.regctl/ \            
+        -v $HOME/.docker/config.json:/home/appuser/.docker/config.json \            
+        regclient/regctl image copy "${source}" "${target}"
     done
 }
 
@@ -37,4 +49,10 @@ if [[ -v CIRCLE_TAG ]]; then
 
   # Push release tags to internal registry
   push_group "${internalTag}" ".${CIRCLE_TAG}"
+
+  # Push latest/no-suffix tags to dockerhub (e.g. heroku/heroku:22)
+  push_group "${publicTag}" ""
+
+  # Push latest/no-suffix tags to internal registry
+  push_group "${internalTag}" ""
 fi
