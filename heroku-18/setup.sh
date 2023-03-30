@@ -127,6 +127,7 @@ apt-get install -y --no-install-recommends \
     gcc \
     geoip-database \
     ghostscript \
+    gir1.2-harfbuzz-0.0 \
     git \
     gsfonts \
     imagemagick \
@@ -135,6 +136,7 @@ apt-get install -y --no-install-recommends \
     language-pack-en \
     less \
     libargon2-0 \
+    libass9 \
     libc-client2007e \
     libc6-dev \
     libcairo2 \
@@ -148,19 +150,31 @@ apt-get install -y --no-install-recommends \
     libevent-openssl-2.1-6 \
     libevent-pthreads-2.1-6 \
     libexif12 \
+    libfreetype6 \
+    libfribidi0 \
     libgd3 \
     libgdk-pixbuf2.0-0 \
     libgdk-pixbuf2.0-common \
     libgnutls-openssl27 \
+    libgnutls30 \
     libgnutlsxx28 \
     libgraphite2-3 \
+    libgraphite2-3 \
     libgs9 \
+    libharfbuzz-gobject0 \
+    libharfbuzz-icu0 \
     libharfbuzz0b \
     libmagickcore-6.q16-3-extra \
     libmcrypt4 \
     libmemcached11 \
+    libmp3lame0 \
     libmysqlclient20 \
+    libnuma1 \
+    libogg0 \
     libonig4 \
+    libopencore-amrnb0 \
+    libopencore-amrwb0 \
+    libopus0 \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libpangoft2-1.0-0 \
@@ -171,12 +185,22 @@ apt-get install -y --no-install-recommends \
     libsasl2-modules \
     libseccomp2 \
     libsodium23 \
+    libspeex1 \
     libthai-data \
     libthai0 \
+    libtheora0 \
+    libunistring2 \
     libuv1 \
+    libvips42 \
+    libvorbis0a \
+    libvorbisenc2 \
+    libvorbisfile3 \
+    libvpx5 \
     libwebp6 \
     libwebpdemux2 \
     libwebpmux3 \
+    libx264-152 \
+    libx265-146 \
     libxcb-render0 \
     libxcb-shm0 \
     libxrender1 \
@@ -191,6 +215,7 @@ apt-get install -y --no-install-recommends \
     openssh-client \
     openssh-server \
     patch \
+    poppler-utils \
     postgresql-client-15 \
     python \
     rename \
@@ -207,6 +232,7 @@ apt-get install -y --no-install-recommends \
     wget \
     xz-utils \
     zip \
+    zlib1g \
     zstd \
 
 # Install syslinux for amd64 only
