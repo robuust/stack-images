@@ -130,7 +130,7 @@ apt-get install -y --no-install-recommends \
     gir1.2-harfbuzz-0.0 \
     git \
     gsfonts \
-    imagemagick \
+    imagemagick=8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3 \
     iproute2 \
     iputils-tracepath \
     language-pack-en \
