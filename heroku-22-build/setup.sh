@@ -63,7 +63,7 @@ apt-get install -y --no-install-recommends \
     libonig-dev \
     libpam0g-dev \
     libpopt-dev \
-    libpq-dev=16.0-1.pgdg22.04+1 \
+    libpq-dev=16.1-1.pgdg22.04+1 \
     librabbitmq-dev \
     libreadline-dev \
     librtmp-dev \
