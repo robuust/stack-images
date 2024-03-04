@@ -45,10 +45,7 @@ docker buildx create --use
 
 [[ $STACK_VERSION =~ ^[0-9]+$ ]] || (>&2 print_usage && abort "fatal: invalid STACK_VERSION")
 
-have_docker_container_driver=
-if (docker buildx inspect; true) | grep -q 'Driver:\s*docker-container$'; then
-	have_docker_container_driver=1
-fi
+have_docker_container_driver=1
 
 have_containerd_snapshotter=
 if docker info -f "{{ .DriverStatus }}" | grep -qF "io.containerd.snapshotter."; then have_containerd_snapshotter=1; fi
