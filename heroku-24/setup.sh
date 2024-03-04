@@ -10,12 +10,12 @@ export DEBIAN_FRONTEND=noninteractive
 
 # The default sources list minus backports, restricted and multiverse.
 cat >/etc/apt/sources.list <<EOF
-deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy main universe
-deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-security main universe
-deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates main universe
-deb [arch=arm64] http://ports.ubuntu.com/ jammy main universe
-deb [arch=arm64] http://ports.ubuntu.com/ jammy-security main universe
-deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ noble main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ noble-security main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ noble-updates main universe
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main universe
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-security main universe
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main universe
 EOF
 
 apt-get update
@@ -27,7 +27,7 @@ apt-get install -y --no-install-recommends gnupg
 # than is available in the Ubuntu repository, so use the upstream APT repository instead:
 # https://wiki.postgresql.org/wiki/Apt
 cat >>/etc/apt/sources.list <<EOF
-deb http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main
+deb http://apt.postgresql.org/pub/repos/apt/ noble-pgdg main
 EOF
 
 # From https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -112,7 +112,7 @@ Gtz3cydIohvNO9d90+29h0eGEDYti7j7maHkBKUAwlcPvMg5m3Y=
 PGDG_ACCC4CF8
 
 apt-get update
-apt-get upgrade -y
+apt-get upgrade -y --no-install-recommends
 apt-get install -y --no-install-recommends \
     apt-transport-https \
     apt-utils \
@@ -127,14 +127,11 @@ apt-get install -y --no-install-recommends \
     gcc \
     geoip-database \
     gettext-base \
-    ghostscript \
     gir1.2-harfbuzz-0.0 \
     git \
-    gsfonts \
     imagemagick \
     iproute2 \
     iputils-tracepath \
-    language-pack-en \
     less \
     libaom3 \
     libargon2-1 \
@@ -144,7 +141,7 @@ apt-get install -y --no-install-recommends \
     libcairo2 \
     libcurl4 \
     libdatrie1 \
-    libdav1d5 \
+    libdav1d7 \
     libev4 \
     libevent-2.1-7 \
     libevent-core-2.1-7 \
@@ -159,16 +156,14 @@ apt-get install -y --no-install-recommends \
     libgdk-pixbuf2.0-common \
     libgnutls-openssl27 \
     libgnutls30 \
-    libgnutlsxx28 \
     libgraphite2-3 \
     libgraphite2-3 \
-    libgs9 \
     libharfbuzz-gobject0 \
     libharfbuzz-icu0 \
     libharfbuzz0b \
     libheif1 \
     liblzf1 \
-    libmagickcore-6.q16-3-extra \
+    libmagickcore-6.q16-7-extra \
     libmcrypt4 \
     libmemcached11 \
     libmp3lame0 \
@@ -190,21 +185,21 @@ apt-get install -y --no-install-recommends \
     libseccomp2 \
     libsodium23 \
     libspeex1 \
-    libsvtav1enc0 \
+    libsvtav1enc1d1 \
     libthai-data \
     libthai0 \
     libtheora0 \
-    libunistring2 \
+    libunistring5 \
     libuv1 \
     libvips42 \
     libvorbis0a \
     libvorbisenc2 \
     libvorbisfile3 \
-    libvpx7 \
+    libvpx8 \
     libwebp7 \
     libwebpdemux2 \
     libwebpmux3 \
-    libx264-163 \
+    libx264-164 \
     libx265-199 \
     libxcb-render0 \
     libxcb-shm0 \
@@ -216,13 +211,12 @@ apt-get install -y --no-install-recommends \
     locales \
     lsb-release \
     make \
-    mtools \
     netcat-openbsd \
     openssh-client \
     openssh-server \
     patch \
     poppler-utils \
-    postgresql-client-15 \
+    postgresql-client-16 \
     python-is-python3 \
     python3 \
     rename \
@@ -240,35 +234,25 @@ apt-get install -y --no-install-recommends \
     zlib1g \
     zstd \
 
-# Install syslinux for amd64 only
-if [ "$TARGETARCH" == "amd64" ]; then apt-get install -y --no-install-recommends syslinux; fi
-
-cat > /etc/ImageMagick-6/policy.xml <<'IMAGEMAGICK_POLICY'
-<policymap>
-  <policy domain="resource" name="memory" value="256MiB"/>
-  <policy domain="resource" name="map" value="512MiB"/>
-  <policy domain="resource" name="width" value="16KP"/>
-  <policy domain="resource" name="height" value="16KP"/>
-  <policy domain="resource" name="area" value="128MP"/>
-  <policy domain="resource" name="disk" value="1GiB"/>
-  <policy domain="delegate" rights="none" pattern="URL" />
-  <policy domain="delegate" rights="none" pattern="HTTPS" />
-  <policy domain="delegate" rights="none" pattern="HTTP" />
-  <policy domain="path" rights="none" pattern="@*"/>
-  <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/>
-</policymap>
-IMAGEMAGICK_POLICY
+# Generate locale data for "en_US", which is not available by default. Ubuntu
+# ships only with "C" and "POSIX" locales.
+locale-gen en_US.UTF-8
 
 # Temporarily install ca-certificates-java to generate the certificates store used
 # by Java apps. Generation occurs in a post-install script which requires a JRE.
 # We're using OpenJDK 8 rather than something newer, to work around:
-# https://github.com/heroku/base-images/pull/103#issuecomment-389544431
+# https://github.com/heroku/stack-images/pull/103#issuecomment-389544431
 apt-get install -y --no-install-recommends ca-certificates-java openjdk-8-jre-headless
 # Using remove rather than purge so that the generated certs are left behind.
 apt-get remove -y ca-certificates-java
 apt-get purge -y openjdk-8-jre-headless
 apt-get autoremove -y --purge
 test "$(file -b /etc/ssl/certs/java/cacerts)" = "Java KeyStore"
+
+useradd heroku -u 1001 -g 1000 -s /bin/bash -m
+useradd heroku-build -u 1002 -g 1000 -s /bin/bash -m
+groupmod --new-name heroku ubuntu
+deluser --remove-home ubuntu
 
 rm -rf /root/*
 rm -rf /tmp/*

@@ -29,17 +29,12 @@ jobs:
       STACK_VERSION: "${{ matrix.stack-version }}"
       DOCKER_HUB_TOKEN: "${{ secrets.DOCKER_HUB_TOKEN }}"
       DOCKER_HUB_USERNAME: "${{ secrets.DOCKER_HUB_USERNAME }}"
-      ID_SERVICE_PASSWORD: "${{ secrets.ID_SERVICE_PASSWORD }}"
-      ID_SERVICE_TOKEN_ENDPOINT: "${{ secrets.ID_SERVICE_TOKEN_ENDPOINT }}"
-      ID_SERVICE_USERNAME: "${{ secrets.ID_SERVICE_USERNAME }}"
-      INTERNAL_REGISTRY_HOST: "${{ secrets.INTERNAL_REGISTRY_HOST }}"
-      INTERNAL_REGISTRY_USERNAME: "${{ secrets.INTERNAL_REGISTRY_USERNAME }}"
       MANIFEST_APP_TOKEN: "${{ secrets.MANIFEST_APP_TOKEN }}"
       MANIFEST_APP_URL: "${{ secrets.MANIFEST_APP_URL }}"
     strategy:
       fail-fast: false
       matrix:
-        stack-version: ["20", "22"]
+        stack-version: ["20", "22", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,8 +50,13 @@ jobs:
             exit 1
           fi
       - name: Publish to image registries
-        run: bin/publish-to-registries.sh
+        run: |-
+          docker buildx create --use
+          bin/publish-to-registries.sh
         if: success() && (github.ref_name == 'main' || github.ref_type == 'tag')
+      - name: Unpublish temp tags from this run
+        run: bin/unpublish-tags.sh
+        if: always()
       - name: Convert docker image and release to Heroku staging
         run: bin/convert-and-publish-to-heroku.sh
         if: success() && github.ref_type == 'tag'
