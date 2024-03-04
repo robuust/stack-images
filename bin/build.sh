@@ -64,7 +64,7 @@ fi
 # Due to weak feature support parity between Docker on Linux and Docker
 # Desktop building and publishing across platforms has caveats (see the
 # top of this file).
-if [[ $have_containerd_snapshotter ]] || { [[ $PUBLISH_SUFFIX ]] && [[ $have_docker_container_driver ]]; }; then
+if [[ $have_containerd_snapshotter ]] || [[ $have_docker_container_driver ]]; then
 	DOCKER_ARGS=("buildx" "build" "--platform=linux/amd64,linux/arm64")
 elif [[ ! $PUBLISH_SUFFIX ]] && [[ ! $have_docker_container_driver ]]; then
 	DOCKER_ARGS=("buildx" "build" "--platform=linux/amd64")
@@ -82,13 +82,7 @@ else
 	abort 1
 fi
 
-if [[ $PUBLISH_SUFFIX ]]; then
-	# If there is a tag suffix, this script is pushing to a remote registry.
-	DOCKER_ARGS+=("--push")
-else
-	# Otherwise, load the image into the local image store.
-	DOCKER_ARGS+=("--load")
-fi
+DOCKER_ARGS+=("--push")
 
 write_package_list() {
 	local image_tag="$1"
