@@ -18,17 +18,20 @@ push_group() {
     local sourceTagSuffix="$2"
     local targetTagSuffix="$3"
     variants=("" "-build")
-    if (( STACK_VERSION <= 22 )); then
+    if (( STACK_VERSION < 24 )); then
         variants+=("-cnb" "-cnb-build")
     fi
     for variant in "${variants[@]}"; do
       source="${tagBase}${variant}${sourceTagSuffix}"
       target="${tagBase}${variant}${targetTagSuffix}"
-      chmod +r "$HOME"/.docker/config.json
-      docker container run --rm --net host \
-        -v regctl-conf:/home/appuser/.regctl/ \
-        -v "$HOME"/.docker/config.json:/home/appuser/.docker/config.json \
-        regclient/regctl image copy "${source}" "${target}"
+      if (( STACK_VERSION < 22 )); then
+        # Re-tag amd64-only images
+        docker tag "${source}" "${target}"
+        docker push "${target}"
+      else
+        # Make a carbon copy image index for multi-arch images
+        docker buildx imagetools create -t "${target}" "${source}"
+      fi
     done
 }
 
