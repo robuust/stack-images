@@ -1,7 +1,6 @@
 # List of packages present in the final image. Regenerate using bin/build.sh
 adduser
 apt
-apt-transport-https
 apt-utils
 autoconf
 automake
@@ -35,7 +34,6 @@ debconf
 debianutils
 diffutils
 dirmngr
-dnsutils
 dpkg
 dpkg-dev
 e2fsprogs
@@ -95,7 +93,6 @@ libacl1-dev
 libaec0
 libaom-dev
 libaom3
-libapparmor1
 libapt-pkg-dev
 libapt-pkg6.0
 libarchive13
@@ -144,7 +141,6 @@ libcgif0
 libcom-err2
 libcrypt-dev
 libcrypt1
-libcryptsetup12
 libctf-nobfd0
 libctf0
 libcurl3-gnutls
@@ -161,7 +157,6 @@ libde265-dev
 libdebconfclient0
 libdeflate-dev
 libdeflate0
-libdevmapper1.02.1
 libdjvulibre-dev
 libdjvulibre-text
 libdjvulibre21
@@ -182,7 +177,6 @@ libexif12
 libexpat1
 libexpat1-dev
 libext2fs2
-libfdisk1
 libffi-dev
 libffi8
 libfftw3-double3
@@ -208,7 +202,7 @@ libgdk-pixbuf2.0-0
 libgdk-pixbuf2.0-bin
 libgdk-pixbuf2.0-common
 libgeoip-dev
-libgeoip1
+libgeoip1t64
 libgfortran5
 libgirepository-2.0-0
 libglib2.0-0
@@ -338,7 +332,6 @@ libnetpbm11
 libnettle8
 libnghttp2-14
 libnpth0
-libnsl-dev
 libnsl2
 libnspr4
 libnss3
@@ -433,7 +426,6 @@ libstdc++-13-dev
 libstdc++6
 libsvtav1enc1d1
 libsystemd-dev
-libsystemd-shared
 libsystemd0
 libsz2
 libtasn1-6
@@ -446,7 +438,6 @@ libtiff6
 libtiffxx6
 libtinfo6
 libtirpc-common
-libtirpc-dev
 libtirpc3
 libtool
 libtsan2
@@ -546,7 +537,6 @@ poppler-utils
 postgresql-client-16
 postgresql-client-common
 procps
-python-is-python3
 python3
 python3-imath
 python3-minimal
@@ -565,12 +555,8 @@ sed
 sensible-utils
 shared-mime-info
 socat
-stunnel4
-systemd
-systemd-dev
 sysvinit-utils
 tar
-telnet
 tzdata
 ubuntu-keyring
 ucf
