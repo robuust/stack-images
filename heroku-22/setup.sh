@@ -146,7 +146,7 @@ packages=(
   shared-mime-info
   socat
   stunnel
-  syslinux
+  syslinux-common
   tar
   telnet
   tzdata
