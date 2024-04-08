@@ -11,14 +11,13 @@ STACK_VERSION=$(echo "${STACK}" | cut -d '-' -f 2-)
 
 DOCKER_IMAGE=heroku/$STACK_NAME:$STACK_VERSION
 DOCKER_IMAGE_VERSION=$(docker inspect "${DOCKER_IMAGE}" | jq .[].Id | cut -d ':' -f 2 | cut -b 1-12)
+# Using `du` rather than the `Size` attribute from Docker inspect, since the latter appears to:
+#  - Under-report usage slightly when using the overlay2 storage driver
+#  - Be the compressed image size (instead of uncompressed) when using the containerd snapshotter
+# The `--user root` is required since the images for newer stacks default to a non-root user.
+DOCKER_IMAGE_SIZE_IN_MB=$(docker run --rm --platform linux/amd64 --user root "${DOCKER_IMAGE}" du -sx --block-size=M | cut -d 'M' -f 1)
 
-if [[ ${GITHUB_REF_TYPE} == 'tag' ]]; then
-    GIT_REF=${GITHUB_REF_NAME:?'Error: GITHUB_REF_NAME must be set!'}
-else
-    abort "Error: Cannot publish without a Git tag!"
-fi
-
-IMG_BASE=${STACK_NAME}64-$STACK_VERSION-$DOCKER_IMAGE_VERSION
+IMG_BASE=${STACK_NAME}-$STACK_VERSION-$DOCKER_IMAGE_VERSION
 IMG=/tmp/$IMG_BASE.img
 IMG_MNT=/tmp/$IMG_BASE
 IMG_GZ=/tmp/$IMG_BASE.img.gz
@@ -29,7 +28,7 @@ IMG_PKG_VERSIONS=/tmp/$IMG_BASE.pkg.versions
 display "Starting capture for ${STACK} ${DOCKER_IMAGE_VERSION} at $(date)"
 
 display "Creating image file ${IMG}"
-make-filesystem-image "${IMG}" |& indent
+make-filesystem-image "${IMG}" "${DOCKER_IMAGE_SIZE_IN_MB}" |& indent
 
 display "Mounting image ${IMG_MNT}"
 mount-filesystem-image "${IMG}" "${IMG_MNT}" |& indent
@@ -41,18 +40,19 @@ display "Modifying image directories and files"
 install-heroku-files "${IMG_MNT}" |& indent
 
 display "Unmounting image"
+df --human-readable "${IMG_MNT}" |& indent
 umount "${IMG_MNT}" |& indent
 
 display "SHA256ing and gzipping image"
 make-image-archive "${IMG}" "${IMG_SHA256}" |& indent
 cat "${IMG_SHA256}"
 
+display "Capture Package Versions"
+capture-package-versions "${DOCKER_IMAGE}" "${IMG_PKG_VERSIONS}"
+
 if update-manifest; then
-    display "Starting push at $(date)"
-    display "Capture Package Versions"
-    capture-package-versions "${DOCKER_IMAGE}" "${IMG_PKG_VERSIONS}"
     display "Uploading files"
-    upload-image "${IMG_GZ}" "${IMG_SHA256}" "${IMG_MANIFEST}" "${STACK}" "${DOCKER_IMAGE_VERSION}" "${IMG_PKG_VERSIONS}" "${GIT_REF}" |& indent
+    upload-image "${IMG_GZ}" "${IMG_SHA256}" "${IMG_MANIFEST}" "${STACK}" "${DOCKER_IMAGE_VERSION}" "${IMG_PKG_VERSIONS}" "${GITHUB_REF_NAME}" |& indent
 else
     display "Skipping image upload"
 fi
