@@ -4,37 +4,17 @@ set -euxo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
-# This is the default `ubuntu.sources` from both the AMD64 and ARM64 images
-# combined, with `noble-backports`, `restricted` and `multiverse` removed.
-cat >/etc/apt/sources.list.d/ubuntu.sources <<EOF
-Types: deb
-URIs: http://archive.ubuntu.com/ubuntu/
-Suites: noble noble-updates
-Components: main universe
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: amd64
-
-Types: deb
-URIs: http://security.ubuntu.com/ubuntu/
-Suites: noble-security
-Components: main universe
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: amd64
-
-Types: deb
-URIs: http://ports.ubuntu.com/ubuntu-ports/
-Suites: noble noble-updates
-Components: main universe
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: arm64
-
-Types: deb
-URIs: http://ports.ubuntu.com/ubuntu-ports/
-Suites: noble-security
-Components: main universe restricted multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: arm64
-EOF
+# Disable APT repositories that contain packages with potentially problematic licenses.
+# We edit the existing file rather than using our own static file contents, since the repository
+# URIs vary across architectures, so we would otherwise have to hardcode multiple file variants.
+# There are multiple repository configuration lines in the file, all of form:
+# `Components: main universe restricted multiverse`
+# See: https://manpages.ubuntu.com/manpages/noble/en/man5/sources.list.5.html
+for repository_to_disable in multiverse restricted; do
+  # sed doesn't support lookbehind so we instead have to match against the line prefix too
+  # and then preserve it using `\1` in the replacement.
+  sed --in-place --regexp-extended "s/(Components:.*) ${repository_to_disable}/\1/g" /etc/apt/sources.list.d/ubuntu.sources
+done
 
 apt-get update --error-on=any
 
@@ -58,109 +38,73 @@ apt-get update --error-on=any
 apt-get upgrade -y --no-install-recommends
 
 packages=(
-  apt-utils
-  # For dig, host and nslookup.
-  bind9-dnsutils
+  bind9-dnsutils # For `dig`, `host` and `nslookup`.
+  binutils # Python's `ctypes.util.find_library` requires `ld` to find libraries specified via `LD_LIBRARY_PATH`.
   bzip2
-  coreutils
   curl
-  ed
   file
-  fontconfig
-  geoip-database
-  gettext-base
-  gir1.2-harfbuzz-0.0
+  gettext-base # For `envsubst`.
+  gir1.2-harfbuzz-0.0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
   gnupg
   imagemagick
   inetutils-telnet
-  iproute2
+  iproute2 # For `ip`, used by Heroku Exec.
   iputils-tracepath
+  jq # Used by Heroku Exec at run time, and buildpacks at build time.
   less
-  libaom3
-  libargon2-1
-  libass9
-  libc-client2007e
-  libcairo2
-  libcurl4
-  libdatrie1
-  libdav1d7
+  libargon2-1 # Used by the PHP runtime.
+  libass9 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libc-client2007e # Used by the PHP IMAP extension.
+  libcares2 # Used by PgBouncer in heroku-buildpack-pgbouncer.
+  libdav1d7 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
   libev4
-  libevent-2.1-7
-  libevent-core-2.1-7
-  libevent-extra-2.1-7
-  libevent-openssl-2.1-7
+  libevent-2.1-7 # Used by PgBouncer in heroku-buildpack-pgbouncer.
+  libevent-core-2.1-7 # Used by the PHP Event extension.
+  libevent-extra-2.1-7 # Used by the PHP Event extension.
+  libevent-openssl-2.1-7 # Used by the PHP Event extension.
   libevent-pthreads-2.1-7
-  libexif12
-  libfreetype6
-  libfribidi0
   libgd3
-  libgdk-pixbuf2.0-0
-  libgdk-pixbuf2.0-common
+  libgdk-pixbuf-2.0-0
   libgnutls-openssl27
-  libgnutls30
-  libgraphite2-3
-  libgraphite2-3
-  libharfbuzz-gobject0
-  libharfbuzz-icu0
-  libharfbuzz0b
-  libheif1
-  liblzf1
-  libmagickcore-6.q16-7-extra
-  libmcrypt4
-  libmemcached11
-  libmp3lame0
+  libgnutls30 # Used by the Ruby and PHP runtimes.
+  libharfbuzz-icu0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  liblzf1 # Used by the PHP Redis extension.
+  libmagickcore-6.q16-7-extra # Used by the PHP Imagick extension (using the `-extra` package for SVG support).
+  libmemcached11 # Used by the PHP Memcached extension.
+  libmp3lame0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
   libmysqlclient21
-  libnuma1
-  libogg0
-  libonig5
-  libopencore-amrnb0
-  libopencore-amrwb0
-  libopus0
-  libpango-1.0-0
-  libpangocairo-1.0-0
-  libpangoft2-1.0-0
-  libpixman-1-0
-  librabbitmq4
-  librsvg2-2
+  libncurses6 # Used by the Ruby runtime.
+  libonig5 # Used by the PHP runtime.
+  libopencore-amrnb0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libopencore-amrwb0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libopus0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  librabbitmq4 # Used by the PHP AMQP extension.
   librsvg2-common
-  libsasl2-modules
-  libseccomp2
-  libsodium23
-  libspeex1
-  libsvtav1enc1d1
-  libthai-data
-  libthai0
-  libtheora0
-  libunistring5
+  libsasl2-modules # Used by the Ruby and PHP runtimes.
+  libsodium23 # Used by the PHP runtime.
+  libspeex1 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libsvtav1enc1d1 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libtheora0 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
   libuv1
-  libvips42
-  libvorbis0a
-  libvorbisenc2
-  libvorbisfile3
-  libvpx9
-  libwebp7
-  libwebpdemux2
-  libwebpmux3
-  libx264-164
-  libx265-199
-  libxcb-render0
-  libxcb-shm0
-  libxrender1
-  libxslt1.1
-  libyaml-0-2
-  libzip4
-  libzstd1
+  libvips42 # Used by the ruby-vips gem / Rails Active Storage Previews.
+  libvorbisenc2 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libvorbisfile3 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libvpx9 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libx264-164 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libx265-199 # Used by FFmpeg in heroku-buildpack-activestorage-preview.
+  libxslt1.1 # Used by the PHP runtime.
+  libyaml-0-2 # Used by the Ruby runtime.
+  libzip4 # Used by the PHP runtime.
   locales
   lsb-release
+  nano # More usable than ed but still much smaller than vim.
   netcat-openbsd
-  openssh-client
-  openssh-server
+  openssh-client # Used by Heroku Exec.
+  openssh-server # Used by Heroku Exec.
   patch
-  poppler-utils
-  postgresql-client-16
-  rename
+  poppler-utils # For Rails Active Storage Previews PDF support.
+  postgresql-client-16 # We need `psql` (and not just libpq) for Shield DB workflows (where connections are only possible from the dyno).
   rsync
-  shared-mime-info
   socat
   tar
   tzdata
@@ -168,26 +112,27 @@ packages=(
   wget
   xz-utils
   zip
-  zlib1g
   zstd
 )
 
 apt-get install -y --no-install-recommends "${packages[@]}"
 
-# Generate locale data for "en_US", which is not available by default. Ubuntu
-# ships only with "C" and "POSIX" locales.
+# Generate locale data for "en_US.UTF-8" too, since the upstream Ubuntu image
+# only ships with the "C", "C.utf8" and "POSIX" locales:
+# https://github.com/docker-library/docs/blob/master/ubuntu/README.md#locales
 locale-gen en_US.UTF-8
 
-# Temporarily install ca-certificates-java to generate the certificates store used
-# by Java apps. Generation occurs in a post-install script which requires a JRE.
-# We're using OpenJDK 8 rather than something newer, to work around:
-# https://github.com/heroku/stack-images/pull/103#issuecomment-389544431
-apt-get install -y --no-install-recommends ca-certificates-java openjdk-8-jre-headless
-# Using remove rather than purge so that the generated certs are left behind.
-apt-get remove -y ca-certificates-java
-apt-get purge -y openjdk-8-jre-headless
-apt-get autoremove -y --purge
-test "$(file -b /etc/ssl/certs/java/cacerts)" = "Java KeyStore"
+# Install ca-certificates-java so that the JVM buildpacks can configure Java apps to use the Java certs
+# store in the base image instead of the one that ships in each JRE release, allowing certs to be updated
+# via base image updates. Generation of the `cacerts` file occurs in a post-install script which only runs
+# if a JRE is installed, however, we don't want a JRE in the final image so remove it afterwards.
+apt-get install -y --no-install-recommends ca-certificates-java default-jre-headless
+apt-get remove -y --purge --auto-remove default-jre-headless
+# Check that the certs store (a) still exists after the removal of default-jre-headless, (b) uses the JKS
+# format not PKCS12, since in the past there was an upstream regression for this:
+# https://github.com/heroku/base-images/pull/103#issuecomment-389544431
+# https://bugs.launchpad.net/ubuntu/+source/ca-certificates-java/+bug/1771363
+test "$(file --brief /etc/ssl/certs/java/cacerts)" = "Java KeyStore"
 
 # Ubuntu 24.04 ships with a default user and group named 'ubuntu' (with user+group ID of 1000)
 # that we have to remove before creating our own (`userdel` will remove the group too).

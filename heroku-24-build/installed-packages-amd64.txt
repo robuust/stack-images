@@ -1,7 +1,6 @@
 # List of packages present in the final image. Regenerate using bin/build.sh
 adduser
 apt
-apt-utils
 autoconf
 automake
 autotools-dev
@@ -37,7 +36,6 @@ dirmngr
 dpkg
 dpkg-dev
 e2fsprogs
-ed
 file
 findutils
 fontconfig
@@ -54,8 +52,6 @@ gcc-13-base
 gcc-13-x86-64-linux-gnu
 gcc-14-base
 gcc-x86-64-linux-gnu
-geoip-bin
-geoip-database
 gettext
 gettext-base
 gir1.2-freedesktop
@@ -95,11 +91,9 @@ keyboxd
 krb5-multidev
 less
 libacl1
-libacl1-dev
 libaec0
 libaom-dev
 libaom3
-libapt-pkg-dev
 libapt-pkg6.0t64
 libarchive13t64
 libargon2-1
@@ -109,9 +103,7 @@ libass9
 libassuan0
 libatomic1
 libattr1
-libattr1-dev
 libaudit-common
-libaudit-dev
 libaudit1
 libbinutils
 libblkid-dev
@@ -125,7 +117,6 @@ libbz2-1.0
 libbz2-dev
 libc-bin
 libc-client2007e
-libc-client2007e-dev
 libc-dev-bin
 libc6
 libc6-dev
@@ -133,11 +124,10 @@ libcairo-gobject2
 libcairo-script-interpreter2
 libcairo2
 libcairo2-dev
-libcap-dev
-libcap-ng-dev
 libcap-ng0
 libcap2
 libcap2-bin
+libcares2
 libcbor0.10
 libcc1-0
 libcfitsio10t64
@@ -153,8 +143,6 @@ libcurl4t64
 libdatrie1
 libdav1d-dev
 libdav1d7
-libdb-dev
-libdb5.3-dev
 libdb5.3t64
 libde265-0
 libde265-dev
@@ -193,7 +181,6 @@ libfribidi0
 libgcc-13-dev
 libgcc-s1
 libgcrypt20
-libgcrypt20-dev
 libgd-dev
 libgd3
 libgdbm-compat4t64
@@ -201,12 +188,8 @@ libgdbm-dev
 libgdbm6t64
 libgdk-pixbuf-2.0-0
 libgdk-pixbuf-2.0-dev
-libgdk-pixbuf-xlib-2.0-0
-libgdk-pixbuf2.0-0
 libgdk-pixbuf2.0-bin
 libgdk-pixbuf2.0-common
-libgeoip-dev
-libgeoip1t64
 libgirepository-1.0-1
 libgirepository-1.0-dev
 libgirepository-2.0-0
@@ -224,7 +207,6 @@ libgnutls-openssl27t64
 libgnutls28-dev
 libgnutls30t64
 libgomp1
-libgpg-error-dev
 libgpg-error0
 libgprofng0
 libgraphite2-3
@@ -248,7 +230,6 @@ libice6
 libicu-dev
 libicu74
 libidn-dev
-libidn11-dev
 libidn12
 libidn2-0
 libidn2-dev
@@ -273,10 +254,7 @@ libk5crypto3
 libkadm5clnt-mit12
 libkadm5srv-mit12
 libkdb5-10t64
-libkeyutils-dev
 libkeyutils1
-libkmod-dev
-libkmod2
 libkrb5-3
 libkrb5-dev
 libkrb5support0
@@ -285,7 +263,6 @@ liblcms2-2
 liblcms2-dev
 libldap-dev
 libldap2
-libldap2-dev
 liblerc-dev
 liblerc4
 liblmdb0
@@ -315,8 +292,6 @@ libmagickwand-6.q16-dev
 libmagickwand-dev
 libmatio11
 libmaxminddb0
-libmcrypt-dev
-libmcrypt4
 libmd-dev
 libmd0
 libmemcached-dev
@@ -330,10 +305,8 @@ libmpc3
 libmpfr6
 libmysqlclient-dev
 libmysqlclient21
-libncurses-dev
 libncurses6
 libncursesw6
-libnetpbm11t64
 libnettle8t64
 libnghttp2-14
 libnpth0t64
@@ -357,7 +330,6 @@ libpam-modules
 libpam-modules-bin
 libpam-runtime
 libpam0g
-libpam0g-dev
 libpango-1.0-0
 libpangocairo-1.0-0
 libpangoft2-1.0-0
@@ -374,7 +346,6 @@ libpng-dev
 libpng16-16t64
 libpoppler-glib8t64
 libpoppler134
-libpopt-dev
 libpopt0
 libpq-dev
 libpq5
@@ -388,7 +359,6 @@ libquadmath0
 librabbitmq-dev
 librabbitmq4
 libraw23t64
-libreadline-dev
 libreadline8t64
 librhash0
 librsvg2-2
@@ -400,12 +370,10 @@ libsasl2-2
 libsasl2-dev
 libsasl2-modules
 libsasl2-modules-db
-libseccomp-dev
 libseccomp2
 libselinux1
 libselinux1-dev
 libsemanage-common
-libsemanage-dev
 libsemanage2
 libsepol-dev
 libsepol2
@@ -427,7 +395,6 @@ libssl3t64
 libstdc++-13-dev
 libstdc++6
 libsvtav1enc1d1
-libsystemd-dev
 libsystemd0
 libsz2
 libtasn1-6
@@ -444,7 +411,6 @@ libtirpc3t64
 libtool
 libtsan2
 libubsan1
-libudev-dev
 libudev1
 libunbound8
 libunibreak5
@@ -517,6 +483,7 @@ media-types
 mlock
 mount
 mysql-common
+nano
 ncurses-base
 ncurses-bin
 netbase
@@ -550,7 +517,6 @@ python3-setuptools
 python3.12
 python3.12-minimal
 readline-common
-rename
 rpcsvc-proto
 rsync
 sed

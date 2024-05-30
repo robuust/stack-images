@@ -23,7 +23,7 @@ build-essential
 bzip2
 bzr
 ca-certificates
-ca-certificates-java
+ca-certificates-java (package status: config-files)
 clang-10
 cmake
 cmake-data
@@ -127,6 +127,7 @@ libbsd-dev
 libbsd0
 libbz2-1.0
 libbz2-dev
+libc-ares2
 libc-bin
 libc-client2007e
 libc-client2007e-dev
@@ -542,6 +543,7 @@ mlock
 mount
 mtools
 mysql-common
+nano
 ncurses-base
 ncurses-bin
 netbase

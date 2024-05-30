@@ -1,13 +1,15 @@
 # List of packages present in the final image. Regenerate using bin/build.sh
 adduser
 apt
-apt-utils
 base-files
 base-passwd
 bash
 bind9-dnsutils
 bind9-host
 bind9-libs
+binutils
+binutils-common
+binutils-x86-64-linux-gnu
 bsdutils
 bzip2
 ca-certificates
@@ -21,7 +23,6 @@ diffutils
 dirmngr
 dpkg
 e2fsprogs
-ed
 file
 findutils
 fontconfig
@@ -29,7 +30,6 @@ fontconfig-config
 fonts-dejavu-core
 fonts-dejavu-mono
 gcc-14-base
-geoip-database
 gettext-base
 gir1.2-freedesktop
 gir1.2-glib-2.0
@@ -52,6 +52,7 @@ inetutils-telnet
 init-system-helpers
 iproute2
 iputils-tracepath
+jq
 keyboxd
 less
 libacl1
@@ -65,6 +66,7 @@ libassuan0
 libattr1
 libaudit-common
 libaudit1
+libbinutils
 libblkid1
 libbpf1
 libbrotli1
@@ -78,11 +80,14 @@ libcairo2
 libcap-ng0
 libcap2
 libcap2-bin
+libcares2
 libcbor0.10
 libcfitsio10t64
 libcgif0
 libcom-err2
 libcrypt1
+libctf-nobfd0
+libctf0
 libcurl3t64-gnutls
 libcurl4t64
 libdatrie1
@@ -116,8 +121,6 @@ libgd3
 libgdbm-compat4t64
 libgdbm6t64
 libgdk-pixbuf-2.0-0
-libgdk-pixbuf-xlib-2.0-0
-libgdk-pixbuf2.0-0
 libgdk-pixbuf2.0-common
 libglib2.0-0t64
 libgmp10
@@ -125,6 +128,7 @@ libgnutls-openssl27t64
 libgnutls30t64
 libgomp1
 libgpg-error0
+libgprofng0
 libgraphite2-3
 libgssapi-krb5-2
 libharfbuzz-gobject0
@@ -141,9 +145,11 @@ libicu74
 libidn2-0
 libimagequant0
 libimath-3-1-29t64
+libjansson4
 libjbig0
 libjpeg-turbo8
 libjpeg8
+libjq1
 libjson-c5
 libjxl0.7
 libk5crypto3
@@ -167,13 +173,13 @@ libmagickcore-6.q16-7t64
 libmagickwand-6.q16-7t64
 libmatio11
 libmaxminddb0
-libmcrypt4
 libmd0
 libmemcached11t64
 libmnl0
 libmount1
 libmp3lame0
 libmysqlclient21
+libncurses6
 libncursesw6
 libnettle8t64
 libnghttp2-14
@@ -221,6 +227,7 @@ libselinux1
 libsemanage-common
 libsemanage2
 libsepol2
+libsframe1
 libsharpyuv0
 libsmartcols1
 libsodium23
@@ -284,6 +291,7 @@ mawk
 mlock
 mount
 mysql-common
+nano
 ncurses-base
 ncurses-bin
 netbase
@@ -303,7 +311,6 @@ postgresql-client-16
 postgresql-client-common
 procps
 readline-common
-rename
 rsync
 sed
 sensible-utils
