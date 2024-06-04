@@ -11,6 +11,8 @@ set -x
   echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
 )
 
+bin/build.sh "${STACK_VERSION}"
+
 push_group() {
     local tagBase="$1"
     local sourceTagSuffix="$2"
@@ -22,7 +24,7 @@ push_group() {
     for variant in "${variants[@]}"; do
       source="${tagBase}${variant}${sourceTagSuffix}"
       target="${tagBase}${variant}${targetTagSuffix}"
-      if (( STACK_VERSION < 24 )); then
+      if (( STACK_VERSION < 22 )); then
         # Re-tag amd64-only images
         docker tag "${source}" "${target}"
         docker push "${target}"

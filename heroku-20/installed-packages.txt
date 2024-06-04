@@ -384,7 +384,7 @@ sensible-utils
 shared-mime-info
 socat
 stunnel4
-syslinux
+syslinux-common
 sysvinit-utils
 tar
 telnet
