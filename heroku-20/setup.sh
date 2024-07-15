@@ -6,9 +6,12 @@ export DEBIAN_FRONTEND=noninteractive
 
 # The default sources list minus backports, restricted and multiverse.
 cat >/etc/apt/sources.list <<EOF
-deb http://archive.ubuntu.com/ubuntu/ focal main universe
-deb http://archive.ubuntu.com/ubuntu/ focal-security main universe
-deb http://archive.ubuntu.com/ubuntu/ focal-updates main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal-security main universe
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal-updates main universe
+deb [arch=arm64] http://ports.ubuntu.com/ focal main universe
+deb [arch=arm64] http://ports.ubuntu.com/ focal-security main universe
+deb [arch=arm64] http://ports.ubuntu.com/ focal-updates main universe
 EOF
 
 apt-get update --error-on=any
@@ -144,7 +147,7 @@ packages=(
   shared-mime-info
   socat
   stunnel
-  syslinux
+  syslinux-common
   tar
   telnet
   tzdata
